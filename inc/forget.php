@@ -29,7 +29,7 @@ if (!empty($_POST) && !empty($_POST['email'])) {
         // Affichez un message d'erreur personnalisé à l'utilisateur
         session_start();
         $_SESSION['flash']['danger'] = 'Aucun compte lié à cette adresse mail';
-        header('Location: forget.php'); // Redirigez l'utilisateur vers la page de connexion
+        header('Location: forget.php'); // Redirigez l'utilisateur vers la page de récupération de mot de passe
         exit();
     }
 }
