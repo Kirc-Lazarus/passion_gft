@@ -15,7 +15,14 @@ erDiagram
         string(100) pseudo
         string(100) email
         string(255) password
-
+        datetime date_inscription 
+        string(60) token
+        datetime confirm_at
+        string(60) reset_token
+        datetime reset_at
+        string(250) remember_token
+        string(60) delete_token
+        int id_user FK
     }
     Act_Real {
         int id_act_real PK
