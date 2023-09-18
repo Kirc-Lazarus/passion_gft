@@ -48,7 +48,7 @@ if (isset($_GET['id']) && isset($_GET['token'])) {
 ?>
 <?php require_once("../elements/header_ins_co.php"); ?>
 <div class="cadre opacity">
-    <div class="contener-form">
+    <div class="contener-form bg-img">
         <form class="form-detail" action="" method="post">
             <h2>Réinitialiser mon mot de passe</h2>
             <div class="form-row">

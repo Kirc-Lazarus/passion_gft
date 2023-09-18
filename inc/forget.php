@@ -38,7 +38,7 @@ require_once("../elements/header_ins_co.php");
 ?>
 <div class="cadre opacity">
     <!-- Début du conteneur avec la classe CSS "cadre opacity" -->
-    <div class="contener-form">
+    <div class="contener-form bg-img">
         <!-- Un sous-conteneur avec la classe CSS "contener-form" -->
         <form class="form-detail" action="" method="post">
             <!-- Début d'un formulaire avec la classe CSS "form-detail", action vide (à spécifier) et méthode POST -->

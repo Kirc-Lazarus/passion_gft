@@ -48,7 +48,7 @@ if (!empty($_POST) && !empty($_POST['pseudo']) && !empty($_POST['password'])) {
 require_once("../elements/header_ins_co.php");
 ?>
 <div class="cadre opacity">
-    <div class="contener-form">
+    <div class="contener-form bg-img">
         <!-- Début du formulaire -->
         <form class="form-detail" action="" method="post">
             <h2>S'identifier</h2> <!-- Titre du formulaire -->

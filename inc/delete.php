@@ -52,7 +52,7 @@ require_once('../elements/header_ins_co.php')
 ?>
 
 <div class="cadre opacity">
-    <div class="contener-form">
+    <div class="contener-form bg-img">
         <!-- Début du formulaire -->
         <form class="form-detail" action="" method="post">
             <h2>Supprimer mon compte</h2> <!-- Titre du formulaire -->

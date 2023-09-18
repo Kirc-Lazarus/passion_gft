@@ -88,7 +88,8 @@ if (!empty($_POST)) {
 <!-- J'englobe mon formulaire dans une balise div, qui contiendra une classe qui me permettra de mettre en arrière plan un fond noir,
  avec une légère opacitée pour une meilleur visualisation de mon texte et de mon image en background. -->
 <div class="cadre opacity">
-    <div class="contener-form">
+   
+    <div class="contener-form bg-img">
 
         <!-- Mon formulaire avec une action vide pour qu'il me redirige vers la page courante et une méthode POST pour envoyer les données en post
     et n'apparaissent pas dans l'url. -->

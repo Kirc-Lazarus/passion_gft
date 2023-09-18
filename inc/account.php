@@ -40,7 +40,7 @@ require_once '../elements/header_ins_co.php';
 
     <div class="cadre opacity">
         <!-- Ceci est un autre conteneur avec une classe CSS 'cadre' et une opacité -->
-        <div class="contener-form">
+        <div class="contener-form bg-img">
             <!-- Ceci est un conteneur pour un formulaire -->
             <?php if (!empty($errors)) : ?>
                 <!-- Cette condition vérifie si la variable $errors n'est pas vide, ce qui signifie qu'il y a des erreurs à afficher. -->
