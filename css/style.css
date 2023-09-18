@@ -105,6 +105,7 @@ header {
 
 main {
   font-family: "Interstate";
+  /* height: 100vh; */
   color: aliceblue;
   /* padding-bottom: 100px; */
 }

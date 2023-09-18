@@ -16,13 +16,13 @@ main {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 500px;
-  height: 655px;
+  /* width: 500px; */
+  /* height: 655px; */
   font-family: "Interstate";
   color: aliceblue;
   background-image: url(http://passion_gft2.0.test/img/background_screen.jpg);
   background-repeat: no-repeat;
-  background-size: 500px;
+  background-size: 100vw;
   color: rgba(245, 237, 207, 1);
 }
 
