@@ -22,7 +22,7 @@ main {
   color: aliceblue;
   background-image: url(http://passion_gft2.0.test/img/background_screen.jpg);
   background-repeat: no-repeat;
-  background-size: 100vw;
+  /* background-size: 100vw; */
   color: rgba(245, 237, 207, 1);
 }
 
