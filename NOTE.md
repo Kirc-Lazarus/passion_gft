@@ -36,7 +36,6 @@ erDiagram
         int(4) year
         string(255) genre
         int id_act_real FK
-
     }
     Commentaires{
         int id_coment PK
