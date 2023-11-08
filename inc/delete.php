@@ -24,11 +24,11 @@ if (!empty($_POST) && !empty($_POST['pseudo']) && !empty($_POST['password'])) {
         // Envoyer l'e-mail de confirmation de suppression à l'utilisateur
         $to = $user->email; // Adresse e-mail de l'utilisateur
         $subject = 'Lien de suppression de votre compte';
-        $message = "Afin d'exécuter la suppression de votre compte, merci de cliquer sur ce lien ATTENTION ACTION IRREVERSIBLE : \n\nhttp://passion_gft2.0.test/inc/confirm_delete.php?id={$user->user}&token=$token";
+        $message = "Afin d'exécuter la suppression de votre compte, merci de cliquer sur ce lien ATTENTION ACTION IRREVERSIBLE : <br><br>\n\nhttp://passion_gft2.0.test/inc/confirm_delete.php?id={$user->user}&token=$token";
 
         // Assurez-vous que l'adresse e-mail de l'utilisateur est correcte
         if (filter_var($to, FILTER_VALIDATE_EMAIL)) {
-            mail($to, $subject, $message);
+            sendMailWithPHPMailer($to, $subject, $message);
             header('Location: ../index.php');
             // Stocker un message de succès dans votre session
             $_SESSION['flash']['warning'] = "Un email de suppression vous a été envoyé, veuillez consulter votre boîte mail ! <h3>Attention si vous cliquez sur le lien envoyé, votre compte sera supprimé définitivement.</h3>";

@@ -1,4 +1,11 @@
 <?php
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+require realpath(__DIR__ . '/../vendor/phpmailer/phpmailer/src/Exception.php');
+require realpath(__DIR__ . '/../vendor/phpmailer/phpmailer/src/PHPMailer.php');
+require realpath(__DIR__ . '/../vendor/phpmailer/phpmailer/src/SMTP.php');
+
 class Auth
 {
     private $session;
@@ -14,23 +21,56 @@ class Auth
     }
 
     public function register($db, $pseudo, $password, $email)
-    {
-        // Je hash le mot de passe de mon utilisateur avec la méthode BCRYPT et le contient dans une variable
-        $password = $this->hashPassword($password);
-        // A l'aide d'une fonction préparé, je fabrique un token de 60 caractères qui me permettra de valider mon compte utilisateur
-        $token = Str::random(60);
+{
+    // Je hash le mot de passe de mon utilisateur avec la méthode BCRYPT et le contient dans une variable
+    $password = $this->hashPassword($password);
+    // A l'aide d'une fonction préparé, je fabrique un token de 60 caractères qui me permettra de valider mon compte utilisateur
+    $token = Str::random(60);
 
-        // Je stock la requête dans une variable appelée req
-        $db->query("INSERT INTO utilisateurs SET pseudo = ?, password = ?, email =?, token = ?", [$pseudo, $password, $email, $token]);
-        // La requête permet de préparer les informations qui seront envoyé à la base de données en respectant
-        // les nomination de chaque ligne de table (Dans ma table utilisateur dans la colonne pseudo, password email et token)
+    // Je stock la requête dans une variable appelée req
+    $db->query("INSERT INTO utilisateurs SET pseudo = ?, password = ?, email =?, token = ?", [$pseudo, $password, $email, $token]);
+    // La requête permet de préparer les informations qui seront envoyé à la base de données en respectant
+    // les nomination de chaque ligne de table (Dans ma table utilisateur dans la colonne pseudo, password email et token)
 
-        // Je fabrique une variable qui contiendra l'id du dernier utilisateur inscrit
-        $user_id = $db->lastInsertId(); // Renvoi le dernier id généré par pdo
-        // J'utilise l'email du membre qui s'inscrit pour lui envoyer la clé token qui permettra de valider le compte.
-        // Dans le mail je met un lien url menant vers la page compte perso contenant la clé primaire de l'utilisateur et le token correspondant à son id (user)
-        mail($email, 'Confirmation de votre compte', "Afin de valider votre compte merci de cliquer sur ce lien \n\nhttp://passion_gft2.0.test/inc/confirm.php?id=$user_id&token=$token");
-    }
+    // Je fabrique une variable qui contiendra l'id du dernier utilisateur inscrit
+    $user_id = $db->lastInsertId(); // Renvoi le dernier id généré par pdo
+    // J'utilise l'email du membre qui s'inscrit pour lui envoyer la clé token qui permettra de valider le compte.
+    // Dans le mail je met un lien url menant vers la page compte perso contenant la clé primaire de l'utilisateur et le token correspondant à son id (user)
+    $this->sendMailWithPHPMailer($email, 'Confirmation de votre compte', "Afin de valider votre compte merci de cliquer sur ce lien : <br><br> \n\nhttp://passion_gft2.0.test/inc/confirm.php?id=$user_id&token=$token");
+}
+
+function sendMailWithPHPMailer($to, $subject, $body) {
+    $mail = new PHPMailer;
+    $mail->CharSet = 'UTF-8';
+
+    $mail->SMTPDebug = 2; // Enable verbose debug output
+    // Configurer PHPMailer pour utiliser SMTP
+    $mail->isSMTP();
+    $mail->Host = 'smtp.gmail.com';  // Spécifiez le serveur SMTP
+    $mail->SMTPAuth = true;
+    $mail->Username = 'ludowil3@gmail.com';  // Nom d'utilisateur SMTP
+    $mail->Password = 'xkqf qusr ghrq zban';  // Mot de passe SMTP
+    $mail->SMTPSecure = 'tls';
+    $mail->Port = 587;
+
+    $mail->setFrom('ludowil3@gmail.com', 'Passion du cinema');
+    $mail->addAddress($to);  // Ajouter un destinataire
+
+    $mail->isHTML(true);  // Définir le format de l'e-mail en HTML
+
+    $mail->Subject = $subject;
+    $mail->Body    = $body;
+    $mail->SMTPOptions = array(
+        'ssl' => array(
+            'verify_peer' => false,
+            'verify_peer_name' => false,
+            'allow_self_signed' => true
+        )
+    );
+    
+    $mail->send();
+    
+}
 
     public function confirm($db, $user_id, $token)
     {

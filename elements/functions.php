@@ -1,4 +1,10 @@
 <?php
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+require realpath(__DIR__ . '/../vendor/phpmailer/phpmailer/src/Exception.php');
+require realpath(__DIR__ . '/../vendor/phpmailer/phpmailer/src/PHPMailer.php');
+require realpath(__DIR__ . '/../vendor/phpmailer/phpmailer/src/SMTP.php');
 function debug($variable) //Fonction pour retourner une valeur et vérifier si mes condition fonctionnent
 {
     echo '<pre>' . print_r($variable, true) . '</pre>';
@@ -69,4 +75,38 @@ function reconnect_cokkie()
             setcookie('remember', NULL, -1);
         }
     }
+}
+
+function sendMailWithPHPMailer($to, $subject, $body) {
+    $mail = new PHPMailer;
+    $mail->CharSet = 'UTF-8';
+
+    $mail->SMTPDebug = 2; // Enable verbose debug output
+    // Configurer PHPMailer pour utiliser SMTP
+    $mail->isSMTP();
+    $mail->Host = 'smtp.gmail.com';  // Spécifiez le serveur SMTP
+    $mail->SMTPAuth = true;
+    $mail->Username = 'ludowil3@gmail.com';  // Nom d'utilisateur SMTP
+    $mail->Password = 'xkqf qusr ghrq zban';  // Mot de passe SMTP
+    $mail->SMTPSecure = 'tls';
+    $mail->Port = 587;
+
+    $mail->setFrom('ludowil3@gmail.com', 'Passion du cinema');
+    $mail->addAddress($to);  // Ajouter un destinataire
+
+    $mail->isHTML(true);  // Définir le format de l'e-mail en HTML
+
+    $mail->Subject = $subject;
+    $mail->Body    = $body;
+    $mail->SMTPOptions = array(
+        'ssl' => array(
+            'verify_peer' => false,
+            'verify_peer_name' => false,
+            'allow_self_signed' => true
+        )
+    );
+    
+    $mail->send();
+    
+    
 }
