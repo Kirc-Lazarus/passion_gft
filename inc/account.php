@@ -1,7 +1,6 @@
 <?php
-require_once '../elements/functions.php';
-// Fonction pour vérifier si une connection est en court et que l'utilisateur peut bien accéder à la page
-logged_only();
+require_once '../elements/bootstrap.php';
+$auth = App::getAuth()->restrict();
 
 // Est-ce que des données sont postées
 if (!empty($_POST)) {
@@ -35,7 +34,9 @@ require_once '../elements/header_ins_co.php';
         <!-- Affiche le pseudo de l'utilisateur en utilisant la variable de session 'auth' -->
         <h3 class="m-2">Email : <?= $_SESSION['auth']->email; ?></h3>
         <!-- Affiche l'e-mail de l'utilisateur en utilisant la variable de session 'auth' -->
-        <a class="d-flex flex-wrap justify-content-center" href="../inc/delete.php"><h5>Suppression de compte</h5></a>
+        <a class="d-flex flex-wrap justify-content-center" href="../inc/delete.php">
+            <h5>Suppression de compte</h5>
+        </a>
     </div>
 
     <div class="cadre opacity">

@@ -1,49 +1,37 @@
 <?php
+require '../elements/bootstrap.php';
 // Est-ce que il y a id et token dans l'url
 if (isset($_GET['id']) && isset($_GET['token'])) {
-    // Connexion à la base de données
-    require_once '../elements/db.php';
-    // Appel des fonctions
-    require_once '../elements/functions.php';
-    //  Je selectionne l'ensemble du tableau utilisateurs où l'id et le reset_token correspondent, je rajoute une condition (is not null) pour renforcer la sécurité et la date du reset doit être supérieur à la date du jour 
-    $req = $pdo->prepare('SELECT * FROM utilisateurs WHERE user = ? AND reset_token IS NOT NULL AND reset_token = ? AND reset_at > DATE_SUB(NOW(), INTERVAL 30 MINUTE)');
-    // j'exécute avec l'id et le token
-    $req->execute([$_GET['id'], $_GET['token']]);
-    // Je récupères les résultat
-    $user = $req->fetch();
+    $auth = App::getAuth();
+    $db = App::getDatabase();
+    $user = $auth->resetToken($db, $_GET['id'], $_GET['token']);
     // Si j'ai un utilisateur
-    if($user){
+    if ($user) {
         // Si j'ai des données
-        if(!empty($_POST)) {
-            // Si ces données correspondent
-            if(!empty($_POST['password']) && $_POST['password'] == $_POST['password_confirm']) {
+        if (!empty($_POST)) {
+            $validator = new Validator($_POST);
+            $validator->isPassword('password');
+            if ($validator->isValid()) {
+
                 // Je met dans une varible mon mot de passe crypté
-                $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
+                $password = $auth->hashPassword($_POST['password']);
                 // Je modifie ma base de données au niveau du password, je vide la date de modification et je vide mon token de réinitialisation
-                $pdo->prepare('UPDATE utilisateurs SET password = ?, reset_at = NULL, reset_token = NULL')->execute([$password]); // J'exécute
-                session_start(); // je démarre ma session pour utiliser ma superglobale
-                // Message succés avec ma superglobale
-                $_SESSION['flash']['success'] = "Votre mot de passe à bien été modifié";
-                // Je connecte mon utilisateur
-                $_SESSION['auth'] = $user;
-                // Et je le redirige
-                header('Location: account.php');
-                exit(); // Stop de l'exécution du script pour éviter d'unset le 'flash' avec le reste du script
+                $db->query('UPDATE utilisateurs SET password = ?, reset_at = NULL, reset_token = NULL WHERE user = ?', [$password, $_GET['id']]); // J'exécute
+                // Message d'erreur
+                Session::getInstance()->setFlash('success', "Le mot de passe a été modifié.");
+                $auth->connect($user);
+                // Redirection
+                App::redirect('account.php');
             }
         }
-
-    }else { // Sinon
-        session_start();
+    } else { // Sinon
         // Message d'erreur
-        $_SESSION['flash']['danger'] = "Le lien n'est plus valide";
+        Session::getInstance()->setFlash('danger', "Le lien n'est plus valide");
         // Redirection
-        header('Location: login.php');
-        exit(); // Stop de l'exécution du script
+        App::redirect('login.php');
     }
-
 } else {
-    header('Location: login.php');
-    exit();
+    App::redirect('login.php');
 }
 ?>
 <?php require_once("../elements/header_ins_co.php"); ?>

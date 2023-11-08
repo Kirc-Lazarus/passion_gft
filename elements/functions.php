@@ -4,13 +4,6 @@ function debug($variable) //Fonction pour retourner une valeur et vérifier si m
     echo '<pre>' . print_r($variable, true) . '</pre>';
 }
 
-function str_random($length)
-{
-    // Je stock les caractères alphanumériques dans une variable
-    $alphabet = "0123456789azertyuiopqsdfghjklmwxcvbnAZERTYUIOPQSDFGHJKLMWXCVBN";
-    // Je demande de répéter mon alphabet * 60, je mélange mon résultat et je demande une taille de 60 caratères avec la fonction substr et le paramêtre $length
-    return substr(str_shuffle(str_repeat($alphabet, $length)), 0, $length);
-}
 
 function logged_only() // Fonction pour controler la connection de l'utilisateur
 {

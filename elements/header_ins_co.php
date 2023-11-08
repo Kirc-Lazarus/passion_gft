@@ -1,10 +1,3 @@
-<?php
-// Si le statut de la session est inactif, je le démarre
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-    // Cela évite les éventuelles erreurs liées aux répétitions
-}
-?>
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -88,16 +81,14 @@ if (session_status() == PHP_SESSION_NONE) {
             </nav>
             <div class="text-center">
                 <!-- Est-ce que la clé flash contient un élément -->
-                <?php if (isset($_SESSION['flash'])) : ?>
+                <?php if (Session::getInstance()->hasFlashes()) : ?>
                     <!-- Si oui, je parcour  mon élément, je récupère en clé le $type et en valeur, le $message -->
-                    <?php foreach ($_SESSION['flash'] as $type => $message) : ?>
+                    <?php foreach (Session::getInstance()->getFlashes() as $type => $message) : ?>
                         <!-- Pour chacun de ses élément je fais une div qui contiendra le message et son type de couleur -->
                         <div class="alert alert-<?= $type; ?>">
                             <?= $message; ?>
                         </div>
                     <?php endforeach; ?>
-                    <!-- Dès que c'est fini, je détruis cet index (le message disparaît) -->
-                    <?php unset($_SESSION['flash']); ?>
                 <?php endif; ?>
                 <!-- Si je rencontre une erreur, j'indique à l'utilisateur à quoi correspond cette erreur -->
                 <?php if (!empty($errors)) : ?>

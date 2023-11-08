@@ -1,7 +1,4 @@
 <?php
-if (session_status() == PHP_SESSION_NONE) {
-  session_start();
-}
 require_once '../elements/functions.php';
 // Fonction pour vérifier si une connection est en court et que l'utilisateur peut bien accéder à la page
 logged_only();

@@ -1,9 +1,6 @@
 <?php
-session_start(); // On démarre la session
+require '../elements/bootstrap.php';
+App::getAuth()->logout();
+Session::getInstance()->setFlash('success', "Vous êtes déconnecté !");
 
-setcookie('remember', NULL, -1); // Premier paramètre la clé, deuxième NULL et troisième moins un jour pour qu'il disparaisse immédiatement
-
-unset($_SESSION['auth']); // On supprime la partie authentification
-$_SESSION['flash']['success'] = "Vous êtes déconnecté !"; // On stock un message succés
-
-header('Location: ../index.php'); // On redirige
+App::redirect('login.php'); // On redirige

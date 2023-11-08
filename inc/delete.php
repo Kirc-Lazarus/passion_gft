@@ -1,7 +1,6 @@
 <?php
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
+require_once '../elements/bootstrap.php';
+Session::getInstance();
 require_once '../elements/functions.php';
 
 // Si des données sont postées et si les champs pseudo et password contiennent des informations
@@ -16,7 +15,7 @@ if (!empty($_POST) && !empty($_POST['pseudo']) && !empty($_POST['password'])) {
 
     if ($user !== false && password_verify($_POST['password'], $user->password)) {
         // Générer un token
-        $token = str_random(60);
+        $token = Str::random(60);
 
         // Mettre à jour la base de données avec le token
         $req = $pdo->prepare("UPDATE utilisateurs SET delete_token = :token WHERE user = :user_id");
@@ -26,7 +25,7 @@ if (!empty($_POST) && !empty($_POST['pseudo']) && !empty($_POST['password'])) {
         $to = $user->email; // Adresse e-mail de l'utilisateur
         $subject = 'Lien de suppression de votre compte';
         $message = "Afin d'exécuter la suppression de votre compte, merci de cliquer sur ce lien ATTENTION ACTION IRREVERSIBLE : \n\nhttp://passion_gft2.0.test/inc/confirm_delete.php?id={$user->user}&token=$token";
-        
+
         // Assurez-vous que l'adresse e-mail de l'utilisateur est correcte
         if (filter_var($to, FILTER_VALIDATE_EMAIL)) {
             mail($to, $subject, $message);

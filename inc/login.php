@@ -1,52 +1,30 @@
 <?php
-require_once '../elements/functions.php';
-reconnect_cokkie();
+require '../elements/bootstrap.php';
+$auth = App::getAuth();
+$db = App::getDatabase();
+$auth->reconnectCokkies($db);
+
 // Si utilisateur connecté
-if (isset($_SESSION['auth'])) {
-    header('Location: account.php'); // Rediriction vers la page de compte
-    exit();
+if ($auth->user()) {
+    App::redirect('account.php');
 }
 // Si des données sont postées et si les champs pseudo et password contiennent des informations
 if (!empty($_POST) && !empty($_POST['pseudo']) && !empty($_POST['password'])) {
-    // Alors on appel une connexion à la base de données
-    require_once '../elements/db.php';
 
-    // on prepare la requête
-    // Sélectionne tous depuis utilisateurs où colonne pseudo est égale au paramètre username ainsi qu'à l'email et que le confirm_at contient bien une date de validation
-    $req = $pdo->prepare('SELECT * FROM utilisateurs WHERE (pseudo = :pseudo OR email = :pseudo) AND confirm_at IS NOT NULL');
-    // On exécute et passe en clé le nom de l'utilisateur
-    $req->execute(['pseudo' => $_POST['pseudo']]);
-    // ET on récupère l'utilisateur
-    $user = $req->fetch();
+    $user = $auth->login($db, $_POST['pseudo'], $_POST['password'], isset($_POST['remember']));
+    $session = Session::getInstance();
+    if ($user) {
 
-    // On vérifie le password avec en premier paramètre le mot de passe entré par l'utilisateur et en deuxième le type de hashage pour vérifier la correspondance 
-    if ($user !== false && password_verify($_POST['password'], $user->password)) { // Fonction avec booleen
-        // Si c'est true,
-        $_SESSION['auth'] = $user; // On connecte l'utilisateur
-        $_SESSION['flash']['success'] = 'Vous êtes bien connecté'; // On indique une connexion réussie
-
-        // MODIFICATION MDP
-        // Si 'remember' est coché
-        if ($_POST['remember']) {
-            // Je fabrique un token de 250 caractères
-            $remember_token = str_random(250);
-            // Je l'intègre à ma base de données
-            $pdo->prepare('UPDATE utilisateurs SET remember_token = ? WHERE user = ?')->execute([$remember_token, $user->user]);
-            // Je sauvegarde dans un cookie l'id et le remember_token et je fais un hashage de l'id et je rajoute une clé choisi arbitrairement pour éviter qu'une personne puisse la deviner et la regénérer puis je fais en sorte que mon cookie reste valable 7 jours
-            setcookie('remember', $user->user . '==' . $remember_token . sha1($user->user . 'member'), time() + 60 * 60 * 24 * 7);
-            // Je détruirais ma clé lorsque l'utilisateur se déconnectera
-        }
-        header('Location: account.php'); // On redirige vers sa page profil
+        $session->setFlash('success', "Vous êtes bien connecté"); // On indique une connexion réussie
+        App::redirect('account.php'); // On redirige vers sa page profil
         exit();
-    } else { // Sinon
-        // On affiche une erreur à l'utilisateur
-        $_SESSION['flash']['danger'] = 'Identifiant ou mot de passe incorrect';
-        // Pour éviter d'informer un utilisateur mal veillant, je n'indique pas que l'erreur concerne seulement le mot de passe 
+    } else {
+        $session->setFlash('danger', "identifiant ou mot de passe incorrecte");
     }
 }
-
-require_once("../elements/header_ins_co.php");
 ?>
+<?php require_once("../elements/header_ins_co.php"); ?>
+
 <div class="cadre opacity">
     <div class="contener-form bg-img">
         <!-- Début du formulaire -->
